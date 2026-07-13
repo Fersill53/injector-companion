@@ -47,11 +47,13 @@ export class PatientsComponent {
     this.saving.set(true);
     this.error.set(null);
 
+    const notes = this.notes().trim();
+
     try {
       await this.patientService.addPatient({
         userId,
         displayName,
-        notes: this.notes().trim() || undefined,
+        ...(notes ? { notes } : {}),
       });
       this.displayName.set('');
       this.notes.set('');
@@ -61,5 +63,10 @@ export class PatientsComponent {
     } finally {
       this.saving.set(false);
     }
+  }
+
+  formatDate(sessionDate: any): string {
+    const date = sessionDate?.toDate ? sessionDate.toDate() : new Date(sessionDate);
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   }
 }

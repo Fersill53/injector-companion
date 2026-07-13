@@ -10,9 +10,11 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  writeBatch,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { Patient, Treatment } from '../models';
+import { Patient, PatientLastVisit, Treatment } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class PatientService {
@@ -46,6 +48,27 @@ export class PatientService {
 
   addTreatment(patientId: string, treatment: Omit<Treatment, 'id' | 'createdAt'>) {
     const treatmentsRef = collection(this.firestore, `patients/${patientId}/treatments`);
-    return addDoc(treatmentsRef, { ...treatment, createdAt: serverTimestamp() });
+    const newTreatmentRef = doc(treatmentsRef);
+    const patientRef = doc(this.firestore, `patients/${patientId}`);
+
+    const batch = writeBatch(this.firestore);
+    batch.set(newTreatmentRef, { ...treatment, createdAt: serverTimestamp() });
+    batch.update(patientRef, { lastVisit: this.buildLastVisit(treatment) });
+
+    return batch.commit();
+  }
+
+  // Backfills lastVisit for patients whose history predates that field.
+  syncLastVisit(patientId: string, mostRecentTreatment: Treatment) {
+    const patientRef = doc(this.firestore, `patients/${patientId}`);
+    return updateDoc(patientRef, { lastVisit: this.buildLastVisit(mostRecentTreatment) });
+  }
+
+  private buildLastVisit(treatment: Pick<Treatment, 'sessionDate' | 'productName' | 'sites'>): PatientLastVisit {
+    return {
+      sessionDate: treatment.sessionDate,
+      productName: treatment.productName,
+      totalUnits: treatment.sites.reduce((sum, s) => sum + s.units, 0),
+    };
   }
 }
