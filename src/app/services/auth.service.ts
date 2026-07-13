@@ -4,6 +4,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
+  updateEmail,
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
   user,
 } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
@@ -25,6 +30,31 @@ export class AuthService {
 
   signOut() {
     return signOut(this.auth);
+  }
+
+  updateDisplayName(displayName: string) {
+    if (!this.auth.currentUser) throw new Error('Not signed in');
+    return updateProfile(this.auth.currentUser, { displayName });
+  }
+
+  async changeEmail(newEmail: string, currentPassword: string) {
+    const currentUser = this.auth.currentUser;
+    if (!currentUser?.email) throw new Error('Not signed in');
+    await reauthenticateWithCredential(
+      currentUser,
+      EmailAuthProvider.credential(currentUser.email, currentPassword)
+    );
+    return updateEmail(currentUser, newEmail);
+  }
+
+  async changePassword(newPassword: string, currentPassword: string) {
+    const currentUser = this.auth.currentUser;
+    if (!currentUser?.email) throw new Error('Not signed in');
+    await reauthenticateWithCredential(
+      currentUser,
+      EmailAuthProvider.credential(currentUser.email, currentPassword)
+    );
+    return updatePassword(currentUser, newPassword);
   }
 
   get currentUserId(): string | null {

@@ -6,17 +6,17 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: '#16231F',
-        surface: '#FFFFFF',
-        canvas: '#F6F7F5',
-        muted: '#6B7A75',
-        teal: {
-          DEFAULT: '#2F6F6B',
-          light: '#3FA79D',
-          dark: '#1D4A47',
+        ink: '#2A2118',
+        surface: '#FFFCF7',
+        canvas: '#F5E8DA',
+        muted: '#8A7A68',
+        sage: {
+          DEFAULT: '#5F7350',
+          light: '#8FA873',
+          dark: '#3F4C36',
         },
-        readout: '#0D1F1C',
-        amber: '#B8783A',
+        readout: '#2A1F17',
+        terracotta: '#BD6B4C',
       },
       fontFamily: {
         display: ['"Space Grotesk"', 'sans-serif'],

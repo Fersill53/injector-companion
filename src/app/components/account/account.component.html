@@ -1,0 +1,116 @@
+<div class="min-h-screen bg-canvas font-body flex items-start sm:items-center justify-center px-4 py-10">
+  <div class="w-full max-w-md">
+
+    <a routerLink="/home" class="inline-flex items-center gap-1 text-sm text-muted hover:text-sage mb-4">
+      <span aria-hidden="true">&larr;</span> Back to home
+    </a>
+
+    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Injector Companion</p>
+    <h1 class="font-display text-2xl font-semibold text-ink mb-6">Account</h1>
+
+    <div class="bg-surface rounded-2xl shadow-sm border border-ink/5 p-5 space-y-8">
+
+      <!-- Full name -->
+      <form class="space-y-3" (ngSubmit)="saveFullName()">
+        <h2 class="text-sm font-semibold text-ink">Full name</h2>
+        <input
+          type="text"
+          [ngModel]="fullName()"
+          (ngModelChange)="fullName.set($event)"
+          name="fullName"
+          placeholder="Jane Doe"
+          class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+
+        @if (fullNameError()) {
+          <p class="text-sm text-terracotta">{{ fullNameError() }}</p>
+        }
+        @if (fullNameMessage()) {
+          <p class="text-sm text-sage-dark">{{ fullNameMessage() }}</p>
+        }
+
+        <button
+          type="submit"
+          [disabled]="fullNameSaving()"
+          class="bg-sage hover:bg-sage-dark text-white font-medium text-sm rounded-lg py-2.5 px-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ fullNameSaving() ? 'Saving…' : 'Save name' }}
+        </button>
+      </form>
+
+      <!-- Email -->
+      <form class="space-y-3 pt-6 border-t border-ink/5" (ngSubmit)="saveEmail()">
+        <h2 class="text-sm font-semibold text-ink">Email address</h2>
+        <input
+          type="email"
+          [ngModel]="newEmail()"
+          (ngModelChange)="newEmail.set($event)"
+          name="newEmail"
+          placeholder="you@example.com"
+          class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+        <input
+          type="password"
+          [ngModel]="emailPassword()"
+          (ngModelChange)="emailPassword.set($event)"
+          name="emailPassword"
+          placeholder="Current password"
+          class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+
+        @if (emailError()) {
+          <p class="text-sm text-terracotta">{{ emailError() }}</p>
+        }
+        @if (emailMessage()) {
+          <p class="text-sm text-sage-dark">{{ emailMessage() }}</p>
+        }
+
+        <button
+          type="submit"
+          [disabled]="emailSaving()"
+          class="bg-sage hover:bg-sage-dark text-white font-medium text-sm rounded-lg py-2.5 px-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ emailSaving() ? 'Saving…' : 'Update email' }}
+        </button>
+      </form>
+
+      <!-- Password -->
+      <form class="space-y-3 pt-6 border-t border-ink/5" (ngSubmit)="savePassword()">
+        <h2 class="text-sm font-semibold text-ink">Password</h2>
+        <input
+          type="password"
+          [ngModel]="currentPassword()"
+          (ngModelChange)="currentPassword.set($event)"
+          name="currentPassword"
+          placeholder="Current password"
+          class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+        <input
+          type="password"
+          [ngModel]="newPassword()"
+          (ngModelChange)="newPassword.set($event)"
+          name="newPassword"
+          placeholder="New password"
+          class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+
+        @if (passwordError()) {
+          <p class="text-sm text-terracotta">{{ passwordError() }}</p>
+        }
+        @if (passwordMessage()) {
+          <p class="text-sm text-sage-dark">{{ passwordMessage() }}</p>
+        }
+
+        <button
+          type="submit"
+          [disabled]="passwordSaving()"
+          class="bg-sage hover:bg-sage-dark text-white font-medium text-sm rounded-lg py-2.5 px-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ passwordSaving() ? 'Saving…' : 'Update password' }}
+        </button>
+      </form>
+
+      <div class="pt-6 border-t border-ink/5">
+        <button
+          type="button"
+          (click)="logout()"
+          class="w-full bg-surface hover:bg-canvas text-ink font-medium text-sm rounded-lg py-2.5 border border-ink/15 transition-colors">
+          Sign out
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
