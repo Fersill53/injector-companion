@@ -1,0 +1,25 @@
+<div class="min-h-screen bg-canvas font-body flex items-center justify-center px-4 py-10">
+  <div class="w-full max-w-md text-center">
+
+    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Injector Companion</p>
+    <h1 class="font-display text-3xl font-semibold text-ink mb-3">Welcome back</h1>
+    @if (user$ | async; as user) {
+      <p class="text-sm text-muted mb-8">Signed in as {{ user.email }}</p>
+    }
+
+    <div class="bg-surface rounded-2xl shadow-sm border border-ink/5 p-5 space-y-3">
+      <a
+        routerLink="/calculator"
+        class="block w-full bg-teal hover:bg-teal-dark text-white font-medium text-sm rounded-lg py-2.5 transition-colors">
+        Open dosing calculator
+      </a>
+      <button
+        type="button"
+        (click)="logout()"
+        class="block w-full bg-surface hover:bg-canvas text-ink font-medium text-sm rounded-lg py-2.5 border border-ink/15 transition-colors">
+        Sign out
+      </button>
+    </div>
+
+  </div>
+</div>
