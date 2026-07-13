@@ -70,3 +70,6 @@ node_modules/
 
 # Angular build cache
 .angular/
+
+# Angular build output
+dist/

@@ -1,114 +1,118 @@
-<div class="min-h-screen bg-canvas font-body flex items-start sm:items-center justify-center px-4 py-10">
-  <div class="w-full max-w-md">
+<div class="min-h-screen bg-canvas font-body px-4 py-10">
+  <div class="w-full max-w-md mx-auto">
 
     <a routerLink="/home" class="inline-flex items-center gap-1 text-sm text-muted hover:text-sage mb-4">
       <span aria-hidden="true">&larr;</span> Back to home
     </a>
 
-    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Injector Companion</p>
+    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Firestore &middot; products</p>
     <h1 class="font-display text-2xl font-semibold text-ink mb-6">Prices</h1>
 
-    <div class="bg-surface rounded-2xl shadow-sm border border-ink/5 p-5 space-y-5">
+    @if (!user()) {
+      <div class="bg-surface rounded-2xl border border-ink/5 p-5 text-sm text-muted">
+        Sign in to view and edit your pricing.
+      </div>
+    } @else {
 
       @if (products().length === 0) {
-        <div class="text-center py-2">
+        <div class="bg-surface rounded-2xl border border-ink/5 p-5 mb-4">
           <p class="text-sm text-muted mb-3">No products yet.</p>
           <button
             type="button"
             (click)="seedDefaults()"
             class="text-sm text-sage font-medium hover:text-sage-dark">
-            Load starter products
+            Load starter products (Botox, Dysport, Xeomin, Jeuveau, Daxxify)
           </button>
         </div>
-      } @else {
-        <ul class="divide-y divide-ink/5">
-          @for (product of products(); track product.id) {
-            <li class="py-3 first:pt-0 last:pb-0">
-              <div class="flex items-baseline justify-between">
-                <p class="text-sm font-medium text-ink">{{ product.name }}</p>
-                <p class="text-xs text-muted font-mono">{{ product.unitsPerVial }} units/vial</p>
-              </div>
-              <div class="flex items-center gap-2 mt-2">
-                <label [attr.for]="'cost-' + product.id" class="text-xs text-muted">Vial cost</label>
-                <span class="text-xs text-muted">&dollar;</span>
+      }
+
+      <div class="space-y-3">
+        @for (product of products(); track product.id) {
+          <div class="bg-surface rounded-2xl border border-ink/5 p-4">
+            <div class="flex items-baseline justify-between mb-3">
+              <span class="font-display font-semibold text-ink">{{ product.name }}</span>
+              <span class="font-mono text-xs text-muted">{{ product.unitsPerVial }}u / vial</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="flex-1">
+                <label class="block text-xs text-muted mb-1">Vial cost ($)</label>
                 <input
-                  [id]="'cost-' + product.id"
                   type="number"
                   step="1"
                   [value]="product.costPerVial ?? ''"
-                  (input)="onCostChange(product, $any($event.target).value)"
                   placeholder="e.g. 650"
-                  class="w-24 font-mono text-sm rounded-lg border border-ink/15 px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+                  (change)="onCostChange(product, $any($event.target).value)"
+                  class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+              </div>
+
+              <div class="flex-1 bg-readout rounded-lg px-3 py-2">
+                <p class="font-mono text-[0.6rem] tracking-widest text-sage-light/80 uppercase mb-0.5">Per unit</p>
                 @if (costPerUnit(product); as cpu) {
-                  <span class="text-xs text-muted font-mono ml-auto">&dollar;{{ cpu | number:'1.2-2' }}/unit</span>
+                  <p class="font-mono text-sm text-white tabular-nums">&dollar;{{ cpu.toFixed(2) }}</p>
+                } @else {
+                  <p class="font-mono text-sm text-white/40">&mdash;</p>
                 }
               </div>
-            </li>
-          }
-        </ul>
-      }
-
-      @if (!showAddForm()) {
-        <button
-          type="button"
-          (click)="showAddForm.set(true)"
-          class="text-sm text-sage font-medium hover:text-sage-dark">
-          + Add product
-        </button>
-      } @else {
-        <form class="space-y-3 pt-2 border-t border-ink/5" (ngSubmit)="submitNewProduct()">
-          <div>
-            <label for="newName" class="block text-sm font-medium text-ink mb-2">Name</label>
-            <input
-              id="newName"
-              type="text"
-              [ngModel]="newName()"
-              (ngModelChange)="newName.set($event)"
-              name="newName"
-              placeholder="e.g. Botox"
-              class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+            </div>
           </div>
+        }
+      </div>
 
-          <div>
-            <label for="newUnitsPerVial" class="block text-sm font-medium text-ink mb-2">Units per vial</label>
-            <input
-              id="newUnitsPerVial"
-              type="number"
-              [ngModel]="newUnitsPerVial()"
-              (ngModelChange)="newUnitsPerVial.set($event)"
-              name="newUnitsPerVial"
-              placeholder="e.g. 100"
-              class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+      <div class="mt-4">
+        @if (!showAddForm()) {
+          <button
+            type="button"
+            (click)="showAddForm.set(true)"
+            class="text-sm text-sage font-medium hover:text-sage-dark">
+            + Add product
+          </button>
+        } @else {
+          <div class="bg-surface rounded-2xl border border-ink/5 p-4 space-y-3">
+            <div>
+              <label class="block text-xs text-muted mb-1">Name</label>
+              <input
+                type="text"
+                [value]="newName()"
+                (input)="newName.set($any($event.target).value)"
+                placeholder="e.g. Sculptra"
+                class="w-full text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+            </div>
+            <div class="flex gap-3">
+              <div class="flex-1">
+                <label class="block text-xs text-muted mb-1">Units / vial</label>
+                <input
+                  type="number"
+                  [value]="newUnitsPerVial() ?? ''"
+                  (input)="newUnitsPerVial.set($any($event.target).value ? +$any($event.target).value : null)"
+                  class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+              </div>
+              <div class="flex-1">
+                <label class="block text-xs text-muted mb-1">Vial cost ($)</label>
+                <input
+                  type="number"
+                  [value]="newCostPerVial() ?? ''"
+                  (input)="newCostPerVial.set($any($event.target).value ? +$any($event.target).value : null)"
+                  class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button
+                type="button"
+                (click)="submitNewProduct()"
+                class="px-4 py-2 rounded-lg bg-sage text-white text-sm font-medium hover:bg-sage-dark">
+                Save
+              </button>
+              <button
+                type="button"
+                (click)="showAddForm.set(false)"
+                class="px-4 py-2 rounded-lg border border-ink/15 text-ink text-sm font-medium">
+                Cancel
+              </button>
+            </div>
           </div>
-
-          <div>
-            <label for="newCostPerVial" class="block text-sm font-medium text-ink mb-2">Vial cost <span class="text-muted font-normal">(optional)</span></label>
-            <input
-              id="newCostPerVial"
-              type="number"
-              [ngModel]="newCostPerVial()"
-              (ngModelChange)="newCostPerVial.set($event)"
-              name="newCostPerVial"
-              placeholder="e.g. 650"
-              class="w-full font-mono text-base rounded-lg border border-ink/15 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
-          </div>
-
-          <div class="flex gap-2">
-            <button
-              type="submit"
-              class="flex-1 bg-sage hover:bg-sage-dark text-white font-medium text-sm rounded-lg py-2.5 transition-colors">
-              Save product
-            </button>
-            <button
-              type="button"
-              (click)="showAddForm.set(false)"
-              class="px-4 text-sm text-muted hover:text-ink">
-              Cancel
-            </button>
-          </div>
-        </form>
-      }
-
-    </div>
+        }
+      </div>
+    }
   </div>
 </div>
