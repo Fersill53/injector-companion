@@ -30,18 +30,18 @@ export class PricesComponent {
   showAddForm = signal(false);
   newName = signal('');
   newUnitsPerVial = signal<number | null>(null);
-  newCostPerVial = signal<number | null>(null);
+  newCostPerUnit = signal<number | null>(null);
 
-  costPerUnit(product: Product): number | null {
-    if (!product.costPerVial || !product.unitsPerVial) return null;
-    return product.costPerVial / product.unitsPerVial;
+  vialValue(product: Product): number | null {
+    if (!product.costPerUnit || !product.unitsPerVial) return null;
+    return product.costPerUnit * product.unitsPerVial;
   }
 
   onCostChange(product: Product, value: string) {
     const parsed = parseFloat(value);
     const cost = isNaN(parsed) ? null : parsed;
     if (!product.id) return;
-    this.productService.updateProduct(product.id, { costPerVial: cost });
+    this.productService.updateProduct(product.id, { costPerUnit: cost });
   }
 
   seedDefaults() {
@@ -60,12 +60,12 @@ export class PricesComponent {
       name,
       unitsPerVial,
       defaultDilutionMl: 2.5,
-      costPerVial: this.newCostPerVial(),
+      costPerUnit: this.newCostPerUnit(),
     });
 
     this.newName.set('');
     this.newUnitsPerVial.set(null);
-    this.newCostPerVial.set(null);
+    this.newCostPerUnit.set(null);
     this.showAddForm.set(false);
   }
 }

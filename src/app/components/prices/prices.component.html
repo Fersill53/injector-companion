@@ -5,7 +5,7 @@
       <span aria-hidden="true">&larr;</span> Back to home
     </a>
 
-    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Firestore &middot; products</p>
+    <p class="font-mono text-xs tracking-[0.2em] text-muted uppercase mb-2">Injector Companion</p>
     <h1 class="font-display text-2xl font-semibold text-ink mb-6">Prices</h1>
 
     @if (!user()) {
@@ -36,20 +36,20 @@
 
             <div class="flex items-center gap-3">
               <div class="flex-1">
-                <label class="block text-xs text-muted mb-1">Vial cost ($)</label>
+                <label class="block text-xs text-muted mb-1">Cost per unit ($)</label>
                 <input
                   type="number"
-                  step="1"
-                  [value]="product.costPerVial ?? ''"
-                  placeholder="e.g. 650"
+                  step="0.01"
+                  [value]="product.costPerUnit ?? ''"
+                  placeholder="e.g. 6.50"
                   (change)="onCostChange(product, $any($event.target).value)"
                   class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
               </div>
 
               <div class="flex-1 bg-readout rounded-lg px-3 py-2">
-                <p class="font-mono text-[0.6rem] tracking-widest text-sage-light/80 uppercase mb-0.5">Per unit</p>
-                @if (costPerUnit(product); as cpu) {
-                  <p class="font-mono text-sm text-white tabular-nums">&dollar;{{ cpu.toFixed(2) }}</p>
+                <p class="font-mono text-[0.6rem] tracking-widest text-sage-light/80 uppercase mb-0.5">Vial value</p>
+                @if (vialValue(product); as vv) {
+                  <p class="font-mono text-sm text-white tabular-nums">&dollar;{{ vv.toFixed(2) }}</p>
                 } @else {
                   <p class="font-mono text-sm text-white/40">&mdash;</p>
                 }
@@ -88,11 +88,12 @@
                   class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
               </div>
               <div class="flex-1">
-                <label class="block text-xs text-muted mb-1">Vial cost ($)</label>
+                <label class="block text-xs text-muted mb-1">Cost per unit ($)</label>
                 <input
                   type="number"
-                  [value]="newCostPerVial() ?? ''"
-                  (input)="newCostPerVial.set($any($event.target).value ? +$any($event.target).value : null)"
+                  step="0.01"
+                  [value]="newCostPerUnit() ?? ''"
+                  (input)="newCostPerUnit.set($any($event.target).value ? +$any($event.target).value : null)"
                   class="w-full font-mono text-sm rounded-lg border border-ink/15 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage" />
               </div>
             </div>

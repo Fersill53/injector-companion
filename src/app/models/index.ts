@@ -4,7 +4,7 @@ export interface Product {
   name: string;          // e.g. 'Botox', 'Dysport', 'Xeomin', 'Jeuveau', 'Daxxify'
   unitsPerVial: number;  // e.g. Botox = 100, Dysport = 300
   defaultDilutionMl: number;
-  costPerVial?: number | null;  // set from the Prices screen, enables cost-per-unit math
+  costPerUnit?: number | null;  // set from the Prices screen; clinics bill per unit, not per vial
 }
 
 // Starter product list used by the calculator's built-in product picker.
@@ -19,7 +19,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
 // Seeded into Firestore once per new user (see ProductService.seedIfEmpty),
 // so the Prices screen has something to start from instead of an empty list.
 export const SEED_PRODUCTS: Omit<Product, 'id' | 'userId'>[] = DEFAULT_PRODUCTS.map(
-  ({ id, ...rest }) => ({ ...rest, costPerVial: null })
+  ({ id, ...rest }) => ({ ...rest, costPerUnit: null })
 );
 
 export interface InjectionSite {
